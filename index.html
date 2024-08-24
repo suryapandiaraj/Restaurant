@@ -6,86 +6,86 @@
     <title>Restaurant</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
+
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        #menuScreen, #orderConfirmationScreen {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+
         .menu-item {
-            margin: 10px 0;
+            font-size: 1.2em;
+            color: #555;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: #e0e0e0;
+        }
+
+        #orderButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #orderButton:hover {
+            background-color: #218838;
+        }
+
+        .order-confirmation {
+            display: none;
+        }
+
+        #orderStatus {
+            font-size: 1.5em;
+            color: #333;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to Our Restaurant</h1>
-    <div id="menu"></div>
-    <button onclick="startOrderProcess()">Start Order</button>
+    <div id="menuScreen" class="menu active">
+        <h1>Our Menu</h1>
+        <div id="menuItems"></div>
+        <button id="orderButton">Place Order</button>
+    </div>
 
-    <script>
-        async function getMenu() {
-            try {
-                const response = await fetch('menu.json'); // Assuming menu.json contains the food items
-                const menuItems = await response.json();
-                const menuDiv = document.getElementById('menu');
-                menuItems.forEach(item => {
-                    const menuItemDiv = document.createElement('div');
-                    menuItemDiv.className = 'menu-item';
-                    menuItemDiv.textContent = `${item.name} - \$${item.price}`;
-                    menuDiv.appendChild(menuItemDiv);
-                });
-            } catch (error) {
-                console.error('Error fetching menu:', error);
-            }
-        }
+    <div id="orderConfirmationScreen" class="order-confirmation">
+        <h1>Order Confirmation</h1>
+        <p id="orderStatus">Your order is being prepared...</p>
+    </div>
 
-        function takeOrder() {
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    const burgers = ['Cheeseburger', 'Veggie Burger', 'Chicken Burger', 'Fish Burger', 'Bacon Burger'];
-                    const order = {
-                        items: []
-                    };
-                    for (let i = 0; i < 3; i++) {
-                        const randomBurger = burgers[Math.floor(Math.random() * burgers.length)];
-                        order.items.push(randomBurger);
-                    }
-                    resolve(order);
-                }, 2500);
-            });
-        }
-
-        function orderPrep() {
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve({ order_status: true, paid: false });
-                }, 1500);
-            });
-        }
-
-        function payOrder() {
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve({ order_status: true, paid: true });
-                }, 1000);
-            });
-        }
-
-        function thankyouFnc() {
-            alert('Thank you for eating with us today!');
-        }
-
-        async function startOrderProcess() {
-            await getMenu();
-            const order = await takeOrder();
-            console.log('Order:', order);
-            const orderStatus = await orderPrep();
-            console.log('Order Status:', orderStatus);
-            const paymentStatus = await payOrder();
-            console.log('Payment Status:', paymentStatus);
-            if (paymentStatus.paid) {
-                thankyouFnc();
-            }
-        }
-
-        // Load the menu when the page loads
-        window.onload = getMenu;
-    </script>
+    <script src="restaurant.js"></script>
 </body>
 </html>
