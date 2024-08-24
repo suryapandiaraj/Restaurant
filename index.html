@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .menu-item {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Our Restaurant</h1>
+    <div id="menu"></div>
+    <button onclick="startOrderProcess()">Start Order</button>
+
+    <script>
+        async function getMenu() {
+            try {
+                const response = await fetch('menu.json'); // Assuming menu.json contains the food items
+                const menuItems = await response.json();
+                const menuDiv = document.getElementById('menu');
+                menuItems.forEach(item => {
+                    const menuItemDiv = document.createElement('div');
+                    menuItemDiv.className = 'menu-item';
+                    menuItemDiv.textContent = `${item.name} - \$${item.price}`;
+                    menuDiv.appendChild(menuItemDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching menu:', error);
+            }
+        }
+
+        function takeOrder() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const burgers = ['Cheeseburger', 'Veggie Burger', 'Chicken Burger', 'Fish Burger', 'Bacon Burger'];
+                    const order = {
+                        items: []
+                    };
+                    for (let i = 0; i < 3; i++) {
+                        const randomBurger = burgers[Math.floor(Math.random() * burgers.length)];
+                        order.items.push(randomBurger);
+                    }
+                    resolve(order);
+                }, 2500);
+            });
+        }
+
+        function orderPrep() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve({ order_status: true, paid: false });
+                }, 1500);
+            });
+        }
+
+        function payOrder() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve({ order_status: true, paid: true });
+                }, 1000);
+            });
+        }
+
+        function thankyouFnc() {
+            alert('Thank you for eating with us today!');
+        }
+
+        async function startOrderProcess() {
+            await getMenu();
+            const order = await takeOrder();
+            console.log('Order:', order);
+            const orderStatus = await orderPrep();
+            console.log('Order Status:', orderStatus);
+            const paymentStatus = await payOrder();
+            console.log('Payment Status:', paymentStatus);
+            if (paymentStatus.paid) {
+                thankyouFnc();
+            }
+        }
+
+        // Load the menu when the page loads
+        window.onload = getMenu;
+    </script>
+</body>
+</html>
